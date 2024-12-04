@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import LoadingScreen from "./src/screens/LoadingScreen";
-import FirstTimerScreen from "./src/screens/Auth/FirstTimerScreen";
-import LoginScreen from "./src/screens/Auth/LoginScreen";
+import AuthNavigator from "./src/navigation/AuthNavigator";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,8 +17,8 @@ function App() {
 
   return (
     <>
-      {/* {!isLoading ? <FirstTimerScreen /> : <LoadingScreen />} */}
-      <LoginScreen />
+      {/* {!isLoading ?  <AuthNavigator /> : <LoadingScreen />} */}
+      <AuthNavigator />
       <StatusBar style="auto" />
     </>
   );

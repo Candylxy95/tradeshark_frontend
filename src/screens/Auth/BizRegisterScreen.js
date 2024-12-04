@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,16 +14,21 @@ import {
 import CustomBtn from "../../components/CustomBtn";
 import { SERVER } from "@env";
 
-const LoginScreen = () => {
-  const [loginForm, setLoginForm] = useState({
+const BizRegisterScreen = () => {
+  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [passwordCheck, setPasswordCheck] = useState("");
+  const [signUpForm, setSignUpForm] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
     phone_number: "",
     password: "",
-    role: "ts_buyer",
+    role: "ts_seller",
   });
 
-  const login = (inputs) => {
-    console.log("Login function called with inputs:", inputs);
-    return fetch(`${SERVER}/auth/login`, {
+  const signUp = (inputs) => {
+    console.log("SignUp function called with inputs:", inputs);
+    return fetch(`${SERVER}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,18 +37,24 @@ const LoginScreen = () => {
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Failed to login");
+          throw new Error("Failed to register");
         }
         return response.json();
       })
       .then(
-        setLoginForm({
+        setSignUpForm({
+          first_name: "",
+          last_name: "",
           email: "",
           phone_number: "",
           password: "",
         }),
+        setPasswordCheck(""),
+        setIsPasswordMatch(false),
 
-        console.log(`successfully logged in`)
+        console.log(
+          `password check: ${passwordCheck}, pass match: ${isPasswordMatch}`
+        )
       )
 
       .catch((error) => {
@@ -52,7 +63,14 @@ const LoginScreen = () => {
   };
 
   const handleChange = (text, value) => {
-    setLoginForm((prevInput) => ({ ...prevInput, [text]: value }));
+    setSignUpForm((prevInput) => ({ ...prevInput, [text]: value }));
+  };
+
+  const handleConfirmPassword = (value) => {
+    setPasswordCheck(value);
+    if (signUpForm.password === value) {
+      setIsPasswordMatch(true);
+    } else setIsPasswordMatch(false);
   };
 
   return (
@@ -69,15 +87,51 @@ const LoginScreen = () => {
       </View>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Login</Text>
+          <Text style={styles.text}>Create your</Text>
+          <Text style={styles.text}>free account</Text>
         </View>
         <View style={styles.inputForm}>
+          <View style={styles.nameInput}>
+            <View style={{ width: "90%" }}>
+              <Text style={styles.inputLabel}>First Name</Text>
+              <TextInput
+                placeholder="First Name"
+                style={styles.input}
+                value={signUpForm.first_name}
+                onChangeText={(text) => {
+                  handleChange("first_name", text);
+                }}
+              />
+            </View>
+            <View style={{ width: "90%" }}>
+              <Text style={styles.inputLabel}>Last Name</Text>
+              <TextInput
+                placeholder="Last Name"
+                style={styles.input}
+                value={signUpForm.last_name}
+                onChangeText={(text) => {
+                  handleChange("last_name", text);
+                }}
+              />
+            </View>
+          </View>
+          <View>
+            <Text style={styles.inputLabel}>Email Address</Text>
+            <TextInput
+              placeholder="Email"
+              style={styles.input}
+              value={signUpForm.email}
+              onChangeText={(text) => {
+                handleChange("email", text);
+              }}
+            />
+          </View>
           <View>
             <Text style={styles.inputLabel}>Phone Number</Text>
             <TextInput
               placeholder="Phone"
               style={styles.input}
-              value={loginForm.phone_number}
+              value={signUpForm.phone_number}
               onChangeText={(text) => {
                 handleChange("phone_number", text);
               }}
@@ -89,11 +143,21 @@ const LoginScreen = () => {
               text="password"
               placeholder="Password"
               style={styles.input}
-              value={loginForm.password}
+              value={signUpForm.password}
               secureTextEntry={true}
               onChangeText={(text) => {
                 handleChange("password", text);
               }}
+            />
+          </View>
+          <View>
+            <Text style={styles.inputLabel}>Confirm Password</Text>
+            <TextInput
+              placeholder="Confirm Password"
+              style={styles.input}
+              value={passwordCheck}
+              secureTextEntry={true}
+              onChangeText={(text) => handleConfirmPassword(text)}
             />
           </View>
         </View>
@@ -101,11 +165,20 @@ const LoginScreen = () => {
           <CustomBtn
             style={styles.btn}
             textStyle={styles.textStyle}
-            title="Login"
+            title="Sign up"
             onPress={() => {
               console.log("Button pressed");
               console.log("SERVER:", SERVER);
-              login(loginForm);
+
+              if (isPasswordMatch) {
+                signUp(signUpForm);
+              } else {
+                Alert.alert(
+                  "Password Mismatch",
+                  "Please ensure your passwords match before signing up.",
+                  [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+                );
+              }
             }}
           />
         </View>
@@ -188,4 +261,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default BizRegisterScreen;

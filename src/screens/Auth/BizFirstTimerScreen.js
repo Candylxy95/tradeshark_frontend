@@ -12,11 +12,13 @@ import { Anton_400Regular } from "@expo-google-fonts/anton";
 import CustomBtn from "../../components/CustomBtn";
 import AppLoading from "expo-app-loading";
 import { useNavigation, Link } from "@react-navigation/native";
+import { BebasNeue_400Regular } from "@expo-google-fonts/bebas-neue";
 
-const FirstTimerScreen = () => {
+const BizFirstTimerScreen = () => {
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
     Anton_400Regular,
+    BebasNeue_400Regular,
   });
 
   if (!fontsLoaded) {
@@ -43,6 +45,7 @@ const FirstTimerScreen = () => {
         >
           TRADESHARK
         </Text>
+        <Text style={styles.bizText}>Biz</Text>
       </View>
       <View style={styles.btnContainer}>
         <CustomBtn
@@ -59,9 +62,9 @@ const FirstTimerScreen = () => {
         />
         <TouchableOpacity
           style={styles.linkContainer}
-          onPress={() => navigation.navigate("BizFirstTimerScreen")}
+          onPress={() => navigation.navigate("FirstTimerScreen")}
         >
-          <Text style={styles.linkText}>Sign up for a business account</Text>
+          <Text style={styles.linkText}>Sign up for non-biz acc</Text>
         </TouchableOpacity>
       </View>
       <StatusBar style="auto" />
@@ -88,12 +91,24 @@ const styles = StyleSheet.create({
     height: "auto",
     width: "auto",
     justifyContent: "center",
+    position: "relative",
   },
   text: {
     fontFamily: "Arial",
     color: "black",
     fontSize: 30,
     textAlign: "center",
+  },
+  bizText: {
+    fontFamily: "Bebas Neue",
+    color: "red",
+    fontSize: 40,
+    textAlign: "right",
+    paddingRight: 100,
+    position: "absolute",
+    zIndex: 1,
+    bottom: 90,
+    right: 0,
   },
   btnContainer: {
     flex: 4,
@@ -126,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FirstTimerScreen;
+export default BizFirstTimerScreen;

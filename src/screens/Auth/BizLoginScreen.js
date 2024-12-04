@@ -14,11 +14,11 @@ import {
 import CustomBtn from "../../components/CustomBtn";
 import { SERVER } from "@env";
 
-const LoginScreen = () => {
+const BizLoginScreen = () => {
   const [loginForm, setLoginForm] = useState({
     phone_number: "",
     password: "",
-    role: "ts_buyer",
+    role: "ts_seller",
   });
 
   const login = (inputs) => {
@@ -188,4 +188,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default BizLoginScreen;
