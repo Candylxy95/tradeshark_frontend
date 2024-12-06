@@ -10,9 +10,11 @@ import {
   Platform,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import CustomBtn from "../../components/CustomBtn";
 import { SERVER } from "@env";
+import { fetch } from "expo/fetch";
 
 const RegisterScreen = () => {
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
@@ -23,42 +25,39 @@ const RegisterScreen = () => {
     email: "",
     phone_number: "",
     password: "",
+    role: "ts_buyer",
   });
 
-  const signUp = (inputs) => {
+  const signUp = async (inputs) => {
     console.log("SignUp function called with inputs:", inputs);
-    return fetch(`${SERVER}/auth/register`, {
+    const res = await fetch(`${SERVER}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(inputs),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to register");
-        }
-        return response.json();
-      })
-      .then(
-        setSignUpForm({
-          first_name: "",
-          last_name: "",
-          email: "",
-          phone_number: "",
-          password: "",
-        }),
-        setPasswordCheck(""),
-        setIsPasswordMatch(false),
+    });
 
-        console.log(
-          `password check: ${passwordCheck}, pass match: ${isPasswordMatch}`
-        )
-      )
+    if (!res.ok) {
+      throw new Error("Failed to register");
+    }
 
-      .catch((error) => {
-        console.error(error);
-      });
+    setSignUpForm({
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone_number: "",
+      password: "",
+      role: "ts_buyer",
+    }),
+      setPasswordCheck(""),
+      setIsPasswordMatch(false),
+      console
+        .log(`password check: ${passwordCheck}, pass match: ${isPasswordMatch}`)
+
+        .catch((error) => {
+          console.error(error);
+        });
   };
 
   const handleChange = (text, value) => {
@@ -180,12 +179,6 @@ const RegisterScreen = () => {
               }
             }}
           />
-          <TouchableOpacity
-            style={styles.link}
-            onPress={() => navigation.navigate("LoginScreen")}
-          >
-            <Text style={styles.linkText}>Login</Text>
-          </TouchableOpacity>
         </View>
         <StatusBar style="auto" />
       </ScrollView>

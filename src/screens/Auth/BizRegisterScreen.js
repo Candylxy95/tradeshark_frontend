@@ -10,11 +10,15 @@ import {
   Platform,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import CustomBtn from "../../components/CustomBtn";
 import { SERVER } from "@env";
+import { fetch } from "expo/fetch";
 
 const BizRegisterScreen = () => {
+  const navigation = useNavigation();
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState("");
   const [signUpForm, setSignUpForm] = useState({
@@ -26,40 +30,38 @@ const BizRegisterScreen = () => {
     role: "ts_seller",
   });
 
-  const signUp = (inputs) => {
-    console.log("SignUp function called with inputs:", inputs);
-    return fetch(`${SERVER}/auth/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(inputs),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to register");
-        }
-        return response.json();
-      })
-      .then(
-        setSignUpForm({
-          first_name: "",
-          last_name: "",
-          email: "",
-          phone_number: "",
-          password: "",
-        }),
+  const signUp = async (inputs) => {
+    try {
+      const res = await fetch(`${SERVER}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputs),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to register");
+      }
+
+      setSignUpForm({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone_number: "",
+        password: "",
+        role: "ts_seller",
+      }),
         setPasswordCheck(""),
         setIsPasswordMatch(false),
-
         console.log(
           `password check: ${passwordCheck}, pass match: ${isPasswordMatch}`
-        )
-      )
-
-      .catch((error) => {
-        console.error(error);
-      });
+        );
+      navigation.navigate("BizLoginScreen");
+    } catch (error) {
+      console.error("Signup error:", error.message);
+      Alert.alert("Signup Error", error.message);
+    }
   };
 
   const handleChange = (text, value) => {

@@ -8,17 +8,14 @@ import RegisterScreen from "../screens/Auth/RegisterScreen";
 import LoginScreen from "../screens/Auth/LoginScreen";
 import BizFirstTimerScreen from "../screens/Auth/BizFirstTimerScreen";
 import BizRegisterScreen from "../screens/Auth/BizRegisterScreen";
+import UserNavigator from "./UserNavigator";
+import ListingExtendedCard from "../components/ListingExtendedCard";
+import ListingScreen from "../screens/User/ListingScreen";
+import BizLoginScreen from "../screens/Auth/BizLoginScreen";
 
 const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => {
-  // const HeaderBackground = () => (
-  //   <ImageBackground
-  //     source={require("../../assets/sharkbanner.png")}
-  //     style={[StyleSheet.absoluteFillObject, { height: 300 }]}
-  //   />
-  // );
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -57,6 +54,29 @@ const AuthNavigator = () => {
         <Stack.Screen
           name="BizRegisterScreen"
           component={BizRegisterScreen}
+          options={{
+            headerTransparent: true,
+            headerTitle: "",
+          }}
+        />
+        <Stack.Screen
+          name="BizLoginScreen"
+          component={BizLoginScreen}
+          options={{
+            headerTransparent: true,
+            headerTitle: "",
+          }}
+        />
+        <Stack.Screen
+          name="UserNavigator"
+          component={UserNavigator}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ListingScreen"
+          component={ListingScreen}
           options={{
             headerTransparent: true,
             headerTitle: "",

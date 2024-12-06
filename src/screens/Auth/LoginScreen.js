@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,44 +11,60 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+import * as SecureStore from "expo-secure-store";
+import * as Expo from "expo";
+import { fetch } from "expo/fetch";
+import { useNavigation } from "@react-navigation/native";
 import CustomBtn from "../../components/CustomBtn";
 import { SERVER } from "@env";
+import UserContext from "../../components/context/UserContext";
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
+  const userContext = useContext(UserContext);
   const [loginForm, setLoginForm] = useState({
-    phone_number: "",
+    email: "" || null,
+    phone_number: "" || null,
     password: "",
     role: "ts_buyer",
   });
 
-  const login = (inputs) => {
-    console.log("Login function called with inputs:", inputs);
-    return fetch(`${SERVER}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(inputs),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to login");
-        }
-        return response.json();
-      })
-      .then(
-        setLoginForm({
-          email: "",
-          phone_number: "",
-          password: "",
-        }),
-
-        console.log(`successfully logged in`)
-      )
-
-      .catch((error) => {
-        console.error(error);
+  const login = async () => {
+    try {
+      console.log("Login function called with inputs:");
+      const res = await fetch(`${SERVER}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginForm),
       });
+
+      if (!res.ok) {
+        const error = await res.json();
+        const errorMsg = error.msg;
+        throw new Error("Failed to login: ", errorMsg);
+      }
+      const data = await res.json();
+      console.log("login response:", data);
+
+      await SecureStore.setItemAsync("accessToken", data.access);
+      userContext.setAccessToken(data.access);
+      console.log(`Access Data = ${data.access}`);
+
+      setLoginForm({
+        email: "",
+        phone_number: "",
+        password: "",
+        role: "ts_buyer",
+      });
+      console.log("Login form emptied.");
+
+      navigation.navigate("UserNavigator");
+    } catch (error) {
+      console.error("Login error:", error.message);
+      Alert.alert("Login Error", error.message);
+    }
   };
 
   const handleChange = (text, value) => {
@@ -105,6 +121,7 @@ const LoginScreen = () => {
             onPress={() => {
               console.log("Button pressed");
               console.log("SERVER:", SERVER);
+              console.log("form data,", loginForm);
               login(loginForm);
             }}
           />

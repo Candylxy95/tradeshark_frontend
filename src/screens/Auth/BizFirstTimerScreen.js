@@ -52,13 +52,13 @@ const BizFirstTimerScreen = () => {
           style={styles.btn}
           textStyle={styles.textStyle}
           title="Login"
-          onPress={() => navigation.navigate("LoginScreen")}
+          onPress={() => navigation.navigate("BizLoginScreen")}
         />
         <CustomBtn
           style={styles.btn}
           textStyle={styles.textStyle}
           title="Signup"
-          onPress={() => navigation.navigate("RegisterScreen")}
+          onPress={() => navigation.navigate("BizRegisterScreen")}
         />
         <TouchableOpacity
           style={styles.linkContainer}
